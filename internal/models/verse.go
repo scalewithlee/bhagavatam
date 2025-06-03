@@ -9,6 +9,6 @@ type Verse struct {
 	ChapterNumber int       `json:"chapter_number"`
 	VerseNumber   int       `json:"verse_number"`
 	Translation   string    `json:"translation"`
-	Purport       string    `json:"purport"`
+	Purport       string    `json:"purport,omitempty"`
 	CreatedAt     time.Time `json:"created_at"`
 }

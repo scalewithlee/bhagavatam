@@ -41,6 +41,20 @@ func GetVerseHandler(c *gin.Context) {
 		return
 	}
 
+	// There are only 12 cantos in the bhagavatam
+	if canto < 1 || canto > 12 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "canto must be between 1 and 12"})
+		return
+	}
+
+	if chapter < 1 || chapter > 100 { // rough upper limit
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid chapter number"})
+	}
+
+	if verse < 1 || verse > 200 { // rough upper limit
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid verse number"})
+	}
+
 	// Create verse with the requested params
 	responseVerse := models.Verse{
 		ID:            1, // we will make this dynamic later
