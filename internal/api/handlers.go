@@ -1,10 +1,10 @@
 package api
 
 import (
+	"bhagavatam/internal/database"
 	"bhagavatam/internal/models"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -57,15 +57,14 @@ func GetVerseHandler(c *gin.Context) {
 		return
 	}
 
-	// Create verse with the requested params
-	responseVerse := models.Verse{
-		ID:            1, // we will make this dynamic later
-		CantoNumber:   canto,
-		ChapterNumber: chapter,
-		VerseNumber:   verse,
-		Translation:   "foo",
-		Purport:       "bar",
-		CreatedAt:     time.Now(),
+	// Query the database
+	var foundVerse models.Verse
+	result := database.DB.Where("canto_number = ? AND chapter_number = ? AND verse_number = ?", canto, chapter, verse).First(&foundVerse)
+
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "verse not found"})
+		return
 	}
-	c.JSON(http.StatusOK, responseVerse)
+
+	c.JSON(http.StatusOK, foundVerse)
 }
