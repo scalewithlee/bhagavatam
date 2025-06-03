@@ -9,7 +9,7 @@ type Config struct {
 
 func Load() *Config {
 	return &Config{
-		DatabaseURL: getEnv("DATABSE_URL", "postgres://bhagavatam:password@localhost:5432/bhagavatam?sslMode=disable"),
+		DatabaseURL: getEnv("DATABSE_URL", "postgres://bhagavatam:password@localhost:5432/bhagavatam?sslmode=disable"),
 		Port:        getEnv("PORT", "8080"),
 	}
 }
