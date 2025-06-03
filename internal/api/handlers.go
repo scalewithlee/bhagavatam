@@ -49,10 +49,12 @@ func GetVerseHandler(c *gin.Context) {
 
 	if chapter < 1 || chapter > 100 { // rough upper limit
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid chapter number"})
+		return
 	}
 
 	if verse < 1 || verse > 200 { // rough upper limit
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid verse number"})
+		return
 	}
 
 	// Create verse with the requested params
