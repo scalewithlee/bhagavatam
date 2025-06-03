@@ -26,6 +26,7 @@ func main() {
 	// Endpoints (like employees, who will return back to the manager, and the manager returns the response)
 	router.GET("/health", api.HealthHander)
 	router.GET("/verses/:canto/:chapter/:verse", api.GetVerseHandler)
+	router.POST("/verses", api.CreateVerseHandler)
 
 	// Start up the server
 	router.Run(":" + config.Port)

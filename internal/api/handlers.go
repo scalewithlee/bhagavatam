@@ -3,6 +3,7 @@ package api
 import (
 	"bhagavatam/internal/database"
 	"bhagavatam/internal/models"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -67,4 +68,43 @@ func GetVerseHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, foundVerse)
+}
+
+// CreateVerseHandler creates a new verse in the database
+func CreateVerseHandler(c *gin.Context) {
+	var newVerse models.Verse
+
+	// Parse JSON request body into our struct
+	if err := c.ShouldBindJSON(&newVerse); err != nil {
+		log.Print(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "failed to parse JSON request body"})
+		return
+	}
+
+	// Basic validation
+	if newVerse.CantoNumber < 1 || newVerse.CantoNumber > 12 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "canto must be between 1 and 12"})
+		return
+	}
+	if newVerse.ChapterNumber < 1 || newVerse.ChapterNumber > 100 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid chapter number"})
+		return
+	}
+	if newVerse.VerseNumber < 1 || newVerse.VerseNumber > 200 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid verse number"})
+		return
+	}
+	if newVerse.Translation == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "translation cannot be empty"})
+	}
+
+	// Insert into database
+	result := database.DB.Create(&newVerse)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create verse"})
+		return
+	}
+
+	// Return the created verse with ID populated
+	c.JSON(http.StatusCreated, newVerse)
 }
